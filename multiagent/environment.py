@@ -108,6 +108,9 @@ class MultiAgentEnv(gym.Env):
             self.post_step_callback(self.world)
         return obs_n, reward_n, done_n, info_n
 
+    def step(self, action_n):
+        return self._step(action_n)
+
     def _reset(self):
         # reset world
         self.reset_callback(self.world)
@@ -119,6 +122,9 @@ class MultiAgentEnv(gym.Env):
         for agent in self.agents:
             obs_n.append(self._get_obs(agent))
         return obs_n
+
+    def reset(self):
+        return self._reset()
 
     # get info used for benchmarking
     def _get_info(self, agent):
@@ -200,6 +206,9 @@ class MultiAgentEnv(gym.Env):
     def _reset_render(self):
         self.render_geoms = None
         self.render_geoms_xform = None
+
+    def render(self, mode='human', close=True):
+        return self._render(mode=mode, close=close)
 
     # render environment
     def _render(self, mode='human', close=True):
@@ -374,11 +383,17 @@ class BatchMultiAgentEnv(gym.Env):
             done_n += done
         return obs_n, reward_n, done_n, info_n
 
+    def step(self, action_n, time):
+        return self._step(action_n, time)
+
     def _reset(self):
         obs_n = []
         for env in self.env_batch:
             obs_n += env.reset()
         return obs_n
+
+    def reset(self):
+        return self._reset()
 
     # render environment
     def _render(self, mode='human', close=True):
@@ -386,3 +401,6 @@ class BatchMultiAgentEnv(gym.Env):
         for env in self.env_batch:
             results_n += env.render(mode, close)
         return results_n
+
+    def render(self, mode='human', close=True):
+        return self._render(mode=mode, close=close)
